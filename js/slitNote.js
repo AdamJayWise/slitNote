@@ -31,7 +31,7 @@ var peakPlotConfig = {
     plotHeight : 300,
     xAxisMin : 0,
     xAxisMax : app.detectorPixelNumber,
-    yAxisMin : -5,
+    yAxisMin : 0,
     yAxisMax : 100,
     yTicks : [0, 25, 50],
     xTicks : [1/4, 1/2, 3/4].map(f=>f*(app.detectorPixelNumber-1)),

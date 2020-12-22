@@ -139,6 +139,11 @@ function Plot(paramObj){
         self.yAxis.tickValues(self.yTicks);
         self.yAxisG.call(self.yAxis);
 
+        // what is max length of y axis ticks
+        var maxTickLength = d3.max(self.yTicks, d=>String(d).length);
+        var tickLengthLookup = {1 : 13, 2 : 13, 3 : 13, 4 : 10.5, 5 : 9}
+        self.yAxisG.selectAll('.tick').style("font-size", tickLengthLookup[maxTickLength])
+
         self.xAxis.tickValues(self.xTicks);
         self.xAxisG.call(self.xAxis);
 
