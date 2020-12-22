@@ -26,6 +26,8 @@ function Plot(paramObj){
     self.xAxisMax = 1000;
     self.yAxisLabel = 'Y Axis';
     self.xAxisLabel = 'X Axis';
+    self.title = "Title";
+    self.topMarginFactor = 2; // fraction of plotMargin to space top by
     self.dataSets = {}; // data sets to plot
 
     // overWrite any default values with paramObj values
@@ -46,12 +48,12 @@ function Plot(paramObj){
     self.xScale = d3.scaleLinear()
                     .domain([self.xAxisMin, self.xAxisMax])
                     .range([self.plotMargin, self.plotWidth-self.plotMargin + self.plotBumper])
-                    .clamp(true)
+                    .clamp(false)
 
     self.yScale = d3.scaleLinear()
                     .domain([self.yAxisMin, self.yAxisMax])
-                    .range([self.plotHeight-self.plotMargin, self.plotMargin/5])
-                    .clamp(true)
+                    .range([self.plotHeight-self.plotMargin, self.plotMargin/2.5])
+                    .clamp(false)
 
     self.dataLine = d3.line()
                     .x(d=>self.xScale(d.x))
@@ -75,14 +77,14 @@ function Plot(paramObj){
         .attr('width', self.xScale(self.xAxisMax) - self.xScale(self.xAxisMin) )
         .attr('height', self.yScale(self.yAxisMin + 0.2) - self.yScale(self.yAxisMax) )
         .attr('x', self.plotMargin)
-        .attr('y', self.plotMargin/5)
+        .attr('y', self.plotMargin/self.topMarginFactor)
 
     // add graph bounding box
     self.svg.append('rect')
         .attr('width', self.xScale(self.xAxisMax) - self.xScale(self.xAxisMin) )
         .attr('height', self.yScale(self.yAxisMin + 0.2) - self.yScale(self.yAxisMax) )
         .attr('x', self.plotMargin)
-        .attr('y', self.plotMargin/5)
+        .attr('y', self.plotMargin/self.topMarginFactor)
         .attr('stroke', 'black')
         .attr('stroke-weight', 3)
         .attr('fill', 'none')
@@ -105,6 +107,14 @@ function Plot(paramObj){
             .style('font-size',13)
 
     
+     // add plot title
+    var titleG = self.svg.append('g');
+    titleG.attr('transform', `translate(${self.xScale( (self.xAxisMin + self.xAxisMax) / 2)}, ${self.yScale(self.yAxisMax) })`)
+    titleG.append('text')
+            .text(self.title)
+            .attr('text-anchor','middle')
+            .attr('class','axisLabel')
+
      // add axes labels for window
      var xLabelG = self.svg.append('g');
      xLabelG.attr('transform', `translate(${self.xScale( (self.xAxisMin + self.xAxisMax) / 2)}, ${self.yScale(self.yAxisMin) + 35})`)
@@ -129,6 +139,9 @@ function Plot(paramObj){
         self.yAxis.tickValues(self.yTicks);
         self.yAxisG.call(self.yAxis);
 
+        self.xAxis.tickValues(self.xTicks);
+        self.xAxisG.call(self.xAxis);
+
         // remove old gridlines
         self.svg.selectAll(".gridLine").remove();
         // add division lines
@@ -140,7 +153,7 @@ function Plot(paramObj){
                 .attr('x1', self.xScale(self.xTicks[i]) + vertLineOffSet)
                 .attr('y1', self.yScale(self.yAxisMin))
                 .attr('x2', self.xScale(self.xTicks[i]) + vertLineOffSet)
-                .attr('y2', self.plotMargin/5)
+                .attr('y2', self.plotMargin / self.topMarginFactor)
                 .attr('stroke','gray')
                 .classed("gridLine", true)
         }

@@ -18,10 +18,11 @@ var resChartConfig = {
     xAxisMax : 100,
     yAxisMin : 20,
     yAxisMax : Math.sqrt(100**2 + app.psf**2),
-    yTicks : [0, 20, 50, 75],
-    xTicks : [0, 25, 50, 75],
+    yTicks : [25, 50, 75],
+    xTicks : [25, 50, 75],
     xAxisLabel : 'Slit Width, um',
-    yAxisLabel : 'System Resolution, um'
+    yAxisLabel : 'System Resolution, um',
+    title : 'Resolution vs. Slit Width'
 }
 
 var peakPlotConfig = {
@@ -32,10 +33,11 @@ var peakPlotConfig = {
     xAxisMax : app.detectorPixelNumber,
     yAxisMin : -5,
     yAxisMax : 100,
-    yTicks : [0, 20, 50],
+    yTicks : [0, 25, 50],
     xTicks : [1/4, 1/2, 3/4].map(f=>f*(app.detectorPixelNumber-1)),
     xAxisLabel : 'Pixel Number',
-    yAxisLabel : 'Counts, a.u.'
+    yAxisLabel : 'Counts, a.u.',
+    title : 'Spectrum at Detector',
 }
 
 //=========
@@ -63,15 +65,18 @@ var resChartPlot = new Plot(resChartConfig);
 var peakPlot = new Plot(peakPlotConfig);
 
 // create a dataset for a particular psf vs slit width
-var slitDatObjList = [];
-for (var i = 0; i < 500; i++){
-    slitDatObjList.push({x : i, y : Math.sqrt(i**2 + app.psf**2)})
+function generateResData(){
+    var slitDatObjList = [];
+    for (var i = 0; i < 500; i++){
+        slitDatObjList.push({x : i, y : Math.sqrt(i**2 + app.psf**2)})
+    }
+    return slitDatObjList;
 }
 
 resChartPlot.dataSets = {
                         set1 : 
                         {
-                            dataObjList : slitDatObjList,
+                            dataObjList : generateResData(),
                         },
                     };
 
@@ -167,6 +172,8 @@ d3.select('#slitRange')
         updatePeakPlot();
         peakPlot.draw();
 
+        d3.select("#slitReadout").text(this.value);
+
         orbIndicator
             .attr("cx", resChartPlot.xScale(app.slitWidth))
             .attr("cy", resChartPlot.yScale(Math.sqrt(app.slitWidth**2 + app.psf**2)));
@@ -178,7 +185,40 @@ d3.select('#pixelSizeRange')
         app.detectorPixelSize = this.value;
         app.detectorPixelNumber = Math.round((65*6.5) / this.value);
         app.detectorPixelNumber += (1 - app.detectorPixelNumber & 1); 
+        
         peakPlot.xAxisMax = app.detectorPixelNumber;
+        peakPlot.xTicks = [1/4, 1/2, 3/4].map(d=>Math.round(d*app.detectorPixelNumber));
+        
         updatePeakPlot();
         peakPlot.draw();
+
+        d3.select("#pixelReadout").text(this.value);
     })
+
+    // add callback for slider
+d3.select('#psfRange')
+.on('input', function(){
+    app.psf = this.value;
+
+    updatePeakPlot();
+    peakPlot.draw();
+
+    resChartPlot.dataSets = {
+        set1 : 
+        {
+            dataObjList : generateResData(),
+        },
+    };
+
+    resChartPlot.yAxisMin = app.psf * 0.75;
+    resChartPlot.yAxisMax = Math.sqrt(app.psf**2 + 100**2) * 1.05;
+    resChartPlot.yTicks = [app.psf, resChartPlot.yAxisMax * 0.9 ].map(d=>Math.round(d));
+
+    resChartPlot.draw();
+
+    orbIndicator
+    .attr("cx", resChartPlot.xScale(app.slitWidth))
+    .attr("cy", resChartPlot.yScale(Math.sqrt(app.slitWidth**2 + app.psf**2)));
+
+    d3.select("#psfReadout").text(this.value);
+})
