@@ -69,7 +69,7 @@ function Plot(paramObj){
 
 
     // add clip path 
-    self.svg.append('clipPath')
+    self.clipPath = self.svg.append('clipPath')
         .attr('id','clipBox')
         .append('rect')
         .attr('width', self.xScale(self.xAxisMax) - self.xScale(self.xAxisMin) )

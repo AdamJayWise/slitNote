@@ -8,23 +8,54 @@
             font-family :Arial, Helvetica, sans-serif;
         }
 
+        body {
+            font-family : Arial, Helvetica, sans-serif;
+        }
+
     </style>
 
 </head>
 
 <body>
 
+    <h2>What is the purpose of a spectrometer slit?</h2>
+    <h4>... and why can't I set it to one micron?</h4>
+
+    <p>Mechanical slits, whether fixed, manually operated, or motorized, are an almost universal feature at the entrance port 
+        of a spectrometer.  They let us shape the light entering the system, preparing a tall, thin source suitable for 
+        dispersing into a spectrum.  For a light source with a large spatial extent - for example, the image of a bright light
+        bulb focused with a magnifying glass onto the spectrometer's input - we can open an adjustable slit wide to let lots of
+        light in, at the cost of decreased spectral resolution, or pinch it down into a thin vertical stripe, letting in a 
+        meagre amount of light, but shaped into an ideal vertical band perfect for spreading out in a well-resolved spectrum.
+    </p>
+
+    <p>
+        But can we close the slit down further and further until we achieve infinitely high spectral resolution?  Sadly, no -
+        eventually, the imaging performance of the spectrometer becomes the limiting factor.  This limit can 
+        be described as a point spread function (PSF) or line spread function (LSF).  That is to say, an infinitely-narrow 
+        slit will be broadened through imperfect imaging into a line of finite width.  As the slit is opened the width of the 
+        slit combines with the spread function, at first making up only a small part of the total broadening, but at larger
+        width dominating completely.  This is why the curve showing the relationship between slit width and resolution looks 
+        the way it does - it's linear when the slit width is large and the "fuzziness" at the edges is inconsequentional, but at
+        small slit widths, the resolution hits the "floor" of the spectrometer imaging performance.
+    </p>
+
+
+
     <svg id = "resChart" height = "300px" width = "300px"></svg>
 
     <svg id = "peakPlot" height = "300px" width = "300px"></svg>
 
     <div class="slidecontainer">
+        Slit Width, um
         <input type="range" min="1" max="100" value="20" class="slider" id="slitRange">
       </div>
 
+      <!--
       <div class="slidecontainer">
         <input type="range" min="1" max="25" value="6.5" class="slider" id="pixelSizeRange">
       </div>
+      -->
 
 </body>
 

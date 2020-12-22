@@ -15,11 +15,11 @@ var resChartConfig = {
     plotWidth : 300,
     plotHeight : 300,
     xAxisMin : 0,
-    xAxisMax : 75,
+    xAxisMax : 100,
     yAxisMin : 20,
-    yAxisMax : 75,
-    yTicks : [0, 20, 50],
-    xTicks : [0, 25, 50],
+    yAxisMax : Math.sqrt(100**2 + app.psf**2),
+    yTicks : [0, 20, 50, 75],
+    xTicks : [0, 25, 50, 75],
     xAxisLabel : 'Slit Width, um',
     yAxisLabel : 'System Resolution, um'
 }
@@ -86,40 +86,42 @@ function generateSlitData(){
     dataArray.length = app.detectorPixelNumber;
     dataArray.fill(0);
     // code for generating peak plot
-    for (var i =0; i < dataArray.length; i++){
-        // calculate the integral for each pixel.  E.g. for pixel one, it'll be 0:pixelwidth, then for pixel 2 it'll be pixelwidth : 2*pixelwidth and so on
-        // the integral will be erf(a)-erf(b).  estabilish a cutoff at which you won't want to calc erf?
-        // so...
-        var a0 = 1000; // scale value by height of peak
-        var mu = app.detectorPixelNumber * app.detectorPixelSize / 1000 / 2; // mu in mm
-        
-        var sig = Math.sqrt( (app.peakSigma / (2.355 * app.dispersion))**2 + (app.psf/(2.355*1000))**2 );
-        
-        
-        // right now sigma is kinda mixed between nm and mm... I need to turn the sigma from the peak into mm
-        var x0 = ( (i+0) * app.detectorPixelSize / 1000) - mu;
-        var x1 = ( (i+1) * app.detectorPixelSize / 1000) - mu;
-        
-        // with slit! x1 is left point
-        // integral w/ slit conv is I(x) = erfInt(x + app.slitWidth/2) - erfInt(x - app.slitWidth/2)
+    for (var m = 0; m < 3; m++){
+        for (var i =0; i < dataArray.length; i++){
+            // calculate the integral for each pixel.  E.g. for pixel one, it'll be 0:pixelwidth, then for pixel 2 it'll be pixelwidth : 2*pixelwidth and so on
+            // the integral will be erf(a)-erf(b).  estabilish a cutoff at which you won't want to calc erf?
+            // so...
+            var a0 = 1000; // scale value by height of peak
 
-        var I0 = erfInt( (x0 + app.slitWidth / 2000) / sig) - erfInt( (x0 - app.slitWidth/2000) / sig)
-        var I1 =  erfInt( (x1 + app.slitWidth / 2000) / sig) - erfInt( (x1 - app.slitWidth/2000) / sig)
-        dataArray[i] += (a0 * (I1 - I0));
-        // enforce 16 bit max value
-        dataArray[i] = Math.min(dataArray[i], 2**16); 
-        
+            var mu = (m-1)*0.1 + app.detectorPixelNumber * app.detectorPixelSize / 1000 / 2; // mu in mm
+            
+            var sig = Math.sqrt( (app.peakSigma / (2.355 * app.dispersion))**2 + (app.psf/(2.355*1000))**2 );
+            
+            
+            // right now sigma is kinda mixed between nm and mm... I need to turn the sigma from the peak into mm
+            var x0 = ( (i+0) * app.detectorPixelSize / 1000) - mu;
+            var x1 = ( (i+1) * app.detectorPixelSize / 1000) - mu;
+            
+            // with slit! x1 is left point
+            // integral w/ slit conv is I(x) = erfInt(x + app.slitWidth/2) - erfInt(x - app.slitWidth/2)
 
-        //this is how I'm doing it without slit, 11/2/2020
-        //dataArray[i] += a0 * ( erf(x1/sig) - erf(x0/sig) );
+            var I0 = erfInt( (x0 + app.slitWidth / 2000) / sig) - erfInt( (x0 - app.slitWidth/2000) / sig)
+            var I1 =  erfInt( (x1 + app.slitWidth / 2000) / sig) - erfInt( (x1 - app.slitWidth/2000) / sig)
+            dataArray[i] += (a0 * (I1 - I0));
+            // enforce 16 bit max value
+            dataArray[i] = Math.min(dataArray[i], 2**16); 
+            
 
-    //dataArray[i] +=  this.peakList[k]['a'] * g(i * pixelSize / 1000, this.peakList[k]['mu'], this.peakList[k]['sigma'])
+            //this is how I'm doing it without slit, 11/2/2020
+            //dataArray[i] += a0 * ( erf(x1/sig) - erf(x0/sig) );
+
+        //dataArray[i] +=  this.peakList[k]['a'] * g(i * pixelSize / 1000, this.peakList[k]['mu'], this.peakList[k]['sigma'])
+        }
     }
-
-    var peakDataObjList = [];
-    dataArray.forEach(function(d,i){
-        peakDataObjList.push({x : i, y : d});
-    })
+        var peakDataObjList = [];
+        dataArray.forEach(function(d,i){
+            peakDataObjList.push({x : i, y : d});
+        })
 
 
     return peakDataObjList;
@@ -144,12 +146,30 @@ function updatePeakPlot(){
 updatePeakPlot();
 peakPlot.draw();
 
+
+// append a moving bug to the slit width vs resolution one
+var orbIndicator = resChartPlot
+                    .svg
+                    .append("circle")
+                    .attr("stroke", "red")
+                    .attr("fill", "none")
+                    .attr("stroke-width", "2px")
+                    .attr("r", 5)
+                    .attr("cx", resChartPlot.xScale(app.slitWidth))
+                    .attr("cy", resChartPlot.yScale(Math.sqrt(app.slitWidth**2 + app.psf**2)))
+                    .attr("clip-path", "url(#clipBox)")
+
+
 // add callback for slider
 d3.select('#slitRange')
     .on('input', function(){
         app.slitWidth = this.value;
         updatePeakPlot();
         peakPlot.draw();
+
+        orbIndicator
+            .attr("cx", resChartPlot.xScale(app.slitWidth))
+            .attr("cy", resChartPlot.yScale(Math.sqrt(app.slitWidth**2 + app.psf**2)));
     })
 
 // add callback for slider
