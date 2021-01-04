@@ -12,6 +12,23 @@
             font-family : Arial, Helvetica, sans-serif;
         }
 
+        .rowContainer {
+            display : flex;
+            flex-direction: columns;
+        }
+
+        #controlsDiv {
+            padding: 20px;
+        }
+
+        #controlsTable td {
+           padding : 5px;
+        }
+
+        input[type="slider"] {
+            width: 200px;;
+        }
+
     </style>
 
 </head>
@@ -19,23 +36,23 @@
 <body>
 
     <h2>Spectral Resolution and Slit Width</h2>
-    <h4>...and why can't I set it to one micron?</h4>
+    <h4>...or: why can't I set it to one micron?</h4>
 
-    <p>Mechanical slits are a nearly universal feature of spectrometers.  They restrict the light as it enters, forming a narrow
-        aperture suitable for dispersing into a spectrum.  A wider slit allows more light through, but the wider image it forms
-        reduces the ability to resolve spectral features.  A narrower slit creates fine spectral lines, but potentially at the cost of accepting less
-        light from our source.
+    <p>Mechanical slits are nearly universal in spectrometers.  They restrict light as it enters, pinching down a large source into a narrow
+        image suitable for dispersing into a spectrum.  Wider slits allow more light through, but the wider image
+        makes it harder to resolve spectral features, as will simply start to overlap each other.  A narrower slit creates fine spectral lines - to a point - but often lets in less light.
         
     </p>
 
     <p>
-        Hypothetically, if we had plentry of light and wanted to achieve the best possible spectral resolution, could we simply close the slit
-        further and further, squeezing the light entering into a narrow and narrow line?
+        If we had plenty of light and wanted to achieve insanely high spectral resolution, could we simply close the slit
+        further and further, squeezing the light entering into a narrower and narrower line?  Perhaps we want to spectrally discern
+        two isotopes of the same element and need very high resolution.
     </p>
     
     <p>
-        Sadly, no.  First, even in a perfect world diffraction would eventually catch up with us, spreading out the image of our
-        super-narrow slit.  But before we hit that limit, there are two factors that limit the real-world resolution of the spectrometer.
+        Sadly, no.  First diffraction would eventually catch up with us, spreading out the image of our
+        super-narrow slit into a single-slit diffraction patter.  But before we hit that limit, there are two other factors that limit the real-world resolution of the spectrometer.
     </p>
         
         <h3>Imaging Performance - PSF</h3>
@@ -54,7 +71,7 @@
         The other factor that limits real-world spectrometer resolution is pixel size.  Our image at the detector must be recorded, 
         and with a digital camera this is done by recording the image across an array of pixels.  The size of each pixel represents
         another hard limit for resolution.  A super-narrow line projected onto a detector with big pixels will look exactly as wide
-        as a single pixel - or sometimes two, if we're unlucky and hit the array of pixels right along a seam.
+        as a single pixel - or perhaps two if we're unlucky and hit the array of pixels right in between two columns.
     </p>
 
     <h3>Simulation</h3>
@@ -75,29 +92,33 @@
     </p>
 
 
+<div class = "rowContainer">
 
     <svg id = "resChart" height = "300px" width = "300px"></svg>
 
     <svg id = "peakPlot" height = "300px" width = "300px"></svg>
 
+<div id = "controlsDiv">
+    <table id = "controlsTable">
+        <tr>
+            <td>Slit Width, &mu;m</td>
+            <td><input type="range" min="1" max="100" value="10" class="slider" id="slitRange"></td>
+            <td> <span id = "slitReadout">10</span>&mu;m</td>
+        </tr>
+        <tr>
+            <td>Pixel Size, &mu;m</td>
+            <td><input type="range" min="1" max="100" value="6.5" class="slider" id="pixelSizeRange"></td>
+            <td> <span id = "pixelReadout">6.5</span>&mu;m</td>
+        </tr>
+        <tr>
+            <td>PSF, &mu;m</td>
+            <td><input type="range" min="1" max="100" value="30" class="slider" id="psfRange"></td>
+            <td> <span id = "psfReadout">30</span>&mu;m</td>
+        </tr>
+    </table>
+</div>
 
-<table>
-    <tr>
-        <td>Slit Width, &mu;m</td>
-        <td><input type="range" min="1" max="100" value="10" class="slider" id="slitRange"></td>
-        <td> <span id = "slitReadout">10</span>&mu;m</td>
-    </tr>
-    <tr>
-        <td>Pixel Size, &mu;m</td>
-        <td><input type="range" min="1" max="100" value="6.5" class="slider" id="pixelSizeRange"></td>
-        <td> <span id = "pixelReadout">6.5</span>&mu;m</td>
-    </tr>
-    <tr>
-        <td>PSF, &mu;m</td>
-        <td><input type="range" min="1" max="100" value="30" class="slider" id="psfRange"></td>
-        <td> <span id = "psfReadout">30</span>&mu;m</td>
-    </tr>
-</table>
+</div>
 
 </body>
 
