@@ -35,45 +35,7 @@
 
 <body>
 
-    <h2>Spectral Resolution and Slit Width</h2>
-    <h4>...or: why can't I set it to one micron?</h4>
-
-    <p>Mechanical slits are nearly universal in spectrometers.  They restrict light as it enters, pinching down a large source into a narrow
-        image suitable for dispersing into a spectrum.  Wider slits allow more light through, but the wider image
-        makes it harder to resolve spectral features, as will simply start to overlap each other.  A narrower slit creates fine spectral lines - to a point - but often lets in less light.
-        
-    </p>
-
-    <p>
-        If we had plenty of light and wanted to achieve insanely high spectral resolution, could we simply close the slit
-        further and further, squeezing the light entering into a narrower and narrower line?  Perhaps we want to spectrally discern
-        two isotopes of the same element and need very high resolution.
-    </p>
-    
-    <p>
-        Sadly, no.  First diffraction would eventually catch up with us, spreading out the image of our
-        super-narrow slit into a single-slit diffraction patter.  But before we hit that limit, there are two other factors that limit the real-world resolution of the spectrometer.
-    </p>
-        
-        <h3>Imaging Performance - PSF</h3>
-    <p>
-        No imaging system is perfectly sharp.  The extent of this "blur" can 
-        be described as a point spread function (PSF) or line spread function (LSF).  That is to say, the image of an infinitely-narrow 
-        slit will be broadened through imperfect imaging into a slightly-blurred line of finite width. At very small slit widths,
-        the width of the image at the detector is dominated by the spectrometer's spread function.  At larger slit widths, the small bit of blurring
-        is inconsequential, and our image at the detector looks like the actual slit aperture.  This is why the curve showing the relationship
-        between slit width and resolution looks the way it does - it's linear when the slit width is large and the "fuzziness" at the edges is 
-        unimportant, but at small slit widths, the resolution hits the "floor" of the spectrometer imaging performance.
-    </p>
-
-    <h3>Pixel Size</h3>
-    <p>
-        The other factor that limits real-world spectrometer resolution is pixel size.  Our image at the detector must be recorded, 
-        and with a digital camera this is done by recording the image across an array of pixels.  The size of each pixel represents
-        another hard limit for resolution.  A super-narrow line projected onto a detector with big pixels will look exactly as wide
-        as a single pixel - or perhaps two if we're unlucky and hit the array of pixels right in between two columns.
-    </p>
-
+   
     <h3>Simulation</h3>
     <p>
         Below is a simulation showing three lines coming from a spectrally-narrow source - say, a gas discharge lamp - imaged 
@@ -111,7 +73,7 @@
             <td> <span id = "pixelReadout">6.5</span>&mu;m</td>
         </tr>
         <tr>
-            <td>PSF, &mu;m</td>
+            <td>PSF Width, &mu;m</td>
             <td><input type="range" min="1" max="100" value="30" class="slider" id="psfRange"></td>
             <td> <span id = "psfReadout">30</span>&mu;m</td>
         </tr>
