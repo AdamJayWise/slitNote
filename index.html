@@ -38,30 +38,34 @@
    
     <h3>Simulation</h3>
     <p>
+        
         Slit Width, Pixel Size and Spectral Resolution
-
+        <br><br>
         When training users on how to operate their spectroscopy equipment, we’re often asked about the optimal slit width to use for measurements.  The most accurate, but least satisfying answer is “It depends”.  Specifically, it depends on the nature of the light source being measured with the spectrometer and on the goals of the measurement.  
-        
+        <br><br>
+
         Still, there are some key guidelines:
-        
-        
-        Narrower slits increase spectral resolution
-        Wider slits allow more light into the spectrometer
-        Smaller pixel sizes generally increase spectral resolution
-        Larger pixels collect more light per pixel
+        <br><br>
+            <ul>
+                <li>Narrower slits increase spectral resolution</li>
+                <li>Wider slits allow more light into the spectrometer</li>
+                <li>Smaller pixel sizes generally increase spectral resolution</li>
+                <li>Larger pixels collect more light per pixel</li>
+            </ul>
+
         
         Why might this be the case?
-        
+        <br><br>
         One way of thinking about this: the image formed on the spectrometer’s camera is actually a picture of the illuminated entrance slit.  It’s also not a perfect image - any real-life imaging system spreads out an infinitesimal point of light at its entrance into an imperfect blob of light at the output.  This point-to-blob mapping is called the Point Spread Function (PSF).  
-        
+        <br><br>
         You get a copy of this slightly-fuzzy slit image for each wavelength present in the light coming into the spectrometer.  How spread apart these images are is a function of the spectrometer’s dispersion. 
-        
+        <br><br>
         Spectral resolution is a measure of how close two of these images can be without overlapping so much they can’t be separated.  A small, sharp PSF and high dispersion help with this!  So do small slit widths.  However, below a certain slit size you hit the hard limit of the PSF (and diffraction too, eventually).  This explains the “bent” appearance of the graph of slit width vs. spectral resolution.  At very, very small slit widths, the fixed PSF dominates, then at larger slits widths the resolution is directly proportional to the slit width - although it’d be very rare to use a large slit width (say, 1 mm) because the spectra would look like unnatural rectangles, assuming the slit is uniformly illuminated.  
-        
+        <br><br>
         Finally, once the image is formed at the detector, it gets “diced up” into pixels.  Once light is absorbed at a pixel, all spatial info at a smaller scale than the pixel size is lost - we only know a photon was detected somewhere within the pixel.  As you can imagine, this reduces the spatial resolution.  Large pixels collect lots of light but add spatial uncertainty, while smaller pixels “sample” the image more faithfully.
-        
+        <br><br>
         Below is a simulation of the effect of slit width, pixel size, and point spread function on a model spectra consisting of three identical, closely spaced spectral lines.
-        
+        <br><br>
         Try changing the slit width. What happens to the measured width and "brightness" of the lines?
         Try changing the pixel size. What happens to the "brightness" of the lines? Can they still be clearly resolved as separate features when the pixel size is large?
         Try setting the pixel size high - say 50μm - and changing the slit width. Do you see much change (other than peak height) with changing slit width?
